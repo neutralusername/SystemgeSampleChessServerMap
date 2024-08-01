@@ -2,6 +2,7 @@ package appChess
 
 import (
 	"SystemgeSampleChessServer/dto"
+	"SystemgeSampleChessServer/topics"
 	"encoding/json"
 
 	"github.com/neutralusername/Systemge/Error"
@@ -16,7 +17,7 @@ func (app *App) GetAsyncMessageHandlers() map[string]Node.AsyncMessageHandler {
 
 func (app *App) GetSyncMessageHandlers() map[string]Node.SyncMessageHandler {
 	return map[string]Node.SyncMessageHandler{
-		"move": func(node *Node.Node, message *Message.Message) (string, error) {
+		topics.MOVE: func(node *Node.Node, message *Message.Message) (string, error) {
 			app.mutex.Lock()
 			defer app.mutex.Unlock()
 			move, err := dto.UnmarshalMove(message.GetPayload())
@@ -34,7 +35,7 @@ func (app *App) GetSyncMessageHandlers() map[string]Node.SyncMessageHandler {
 			}
 			return Helpers.JsonMarshal(chessMove), nil
 		},
-		"startGame": func(node *Node.Node, message *Message.Message) (string, error) {
+		topics.STARTGAME: func(node *Node.Node, message *Message.Message) (string, error) {
 			ids := []string{}
 			json.Unmarshal([]byte(message.GetPayload()), &ids)
 			whiteId := ids[0]
@@ -50,7 +51,7 @@ func (app *App) GetSyncMessageHandlers() map[string]Node.SyncMessageHandler {
 			app.mutex.Unlock()
 			return game.marshalBoard(), nil
 		},
-		"endGame": func(node *Node.Node, message *Message.Message) (string, error) {
+		topics.ENDGAME: func(node *Node.Node, message *Message.Message) (string, error) {
 			id := message.GetPayload()
 			app.mutex.Lock()
 			defer app.mutex.Unlock()

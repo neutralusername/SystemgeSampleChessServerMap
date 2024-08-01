@@ -2,6 +2,7 @@ package appWebsocketHTTP
 
 import (
 	"SystemgeSampleChessServer/dto"
+	"SystemgeSampleChessServer/topics"
 	"strings"
 
 	"github.com/neutralusername/Systemge/Error"
@@ -12,13 +13,13 @@ import (
 
 func (app *AppWebsocketHTTP) GetWebsocketMessageHandlers() map[string]Node.WebsocketMessageHandler {
 	return map[string]Node.WebsocketMessageHandler{
-		"startGame": func(node *Node.Node, websocketClient *Node.WebsocketClient, message *Message.Message) error {
+		topics.STARTGAME: func(node *Node.Node, websocketClient *Node.WebsocketClient, message *Message.Message) error {
 			whiteId := websocketClient.GetId()
 			blackId := message.GetPayload()
 			if !node.WebsocketClientExists(blackId) {
 				return Error.New("Opponent does not exist", nil)
 			}
-			responseChannel, err := node.SyncMessage("startGame", Helpers.JsonMarshal([]string{whiteId, blackId}))
+			responseChannel, err := node.SyncMessage(topics.STARTGAME, Helpers.JsonMarshal([]string{whiteId, blackId}))
 			if err != nil {
 				return Error.New("Error sending start message", err)
 			}
@@ -31,7 +32,7 @@ func (app *AppWebsocketHTTP) GetWebsocketMessageHandlers() map[string]Node.Webso
 			}
 			err = node.AddToWebsocketGroup(whiteId+"-"+blackId, whiteId, blackId)
 			if err != nil {
-				responseChannel, err := node.SyncMessage("endGame", whiteId+"-"+blackId)
+				responseChannel, err := node.SyncMessage(topics.ENDGAME, whiteId+"-"+blackId)
 				if err != nil {
 					if errorLogger := node.GetErrorLogger(); errorLogger != nil {
 						errorLogger.Log(Error.New("Error sending endGame message", err).Error())
@@ -50,11 +51,11 @@ func (app *AppWebsocketHTTP) GetWebsocketMessageHandlers() map[string]Node.Webso
 				}
 				return Error.New("Error adding to group", err)
 			}
-			node.WebsocketGroupcast(whiteId+"-"+blackId, Message.NewAsync("propagate_gameStart", response.GetPayload()))
+			node.WebsocketGroupcast(whiteId+"-"+blackId, Message.NewAsync(topics.STARTGAME, response.GetPayload()))
 			return nil
 		},
-		"endGame": func(node *Node.Node, websocketClient *Node.WebsocketClient, message *Message.Message) error {
-			responseChannel, err := node.SyncMessage("endGame", websocketClient.GetId())
+		topics.ENDGAME: func(node *Node.Node, websocketClient *Node.WebsocketClient, message *Message.Message) error {
+			responseChannel, err := node.SyncMessage(topics.ENDGAME, websocketClient.GetId())
 			if err != nil {
 				return Error.New("Error sending endGame message", err)
 			}
@@ -67,17 +68,17 @@ func (app *AppWebsocketHTTP) GetWebsocketMessageHandlers() map[string]Node.Webso
 			}
 			gameId := response.GetPayload()
 			ids := strings.Split(gameId, "-")
-			node.WebsocketGroupcast(gameId, Message.NewAsync("propagate_gameEnd", ""))
+			node.WebsocketGroupcast(gameId, Message.NewAsync(topics.ENDGAME, ""))
 			node.RemoveFromWebsocketGroup(gameId, ids...)
 			return nil
 		},
-		"move": func(node *Node.Node, websocketClient *Node.WebsocketClient, message *Message.Message) error {
+		topics.MOVE: func(node *Node.Node, websocketClient *Node.WebsocketClient, message *Message.Message) error {
 			move, err := dto.UnmarshalMove(message.GetPayload())
 			if err != nil {
 				return Error.New("Error unmarshalling move", err)
 			}
 			move.PlayerId = websocketClient.GetId()
-			responseChannel, err := node.SyncMessage("move", Helpers.JsonMarshal(move))
+			responseChannel, err := node.SyncMessage(topics.MOVE, Helpers.JsonMarshal(move))
 			if err != nil {
 				return Error.New("Error sending move message", err)
 			}
@@ -92,7 +93,7 @@ func (app *AppWebsocketHTTP) GetWebsocketMessageHandlers() map[string]Node.Webso
 			if err != nil {
 				return Error.New("Error unmarshalling response move", err)
 			}
-			node.WebsocketGroupcast(responseMove.GameId, Message.NewAsync("propagate_move", Helpers.JsonMarshal(responseMove)))
+			node.WebsocketGroupcast(responseMove.GameId, Message.NewAsync(topics.MOVE, Helpers.JsonMarshal(responseMove)))
 			return nil
 		},
 	}
@@ -109,7 +110,7 @@ func (app *AppWebsocketHTTP) OnConnectHandler(node *Node.Node, websocketClient *
 }
 
 func (app *AppWebsocketHTTP) OnDisconnectHandler(node *Node.Node, websocketClient *Node.WebsocketClient) {
-	responseChannel, err := node.SyncMessage("endGame", websocketClient.GetId())
+	responseChannel, err := node.SyncMessage(topics.ENDGAME, websocketClient.GetId())
 	if err != nil {
 		if errorLogger := node.GetErrorLogger(); errorLogger != nil {
 			errorLogger.Log(Error.New("Error sending endGame message", err).Error())

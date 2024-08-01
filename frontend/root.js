@@ -45,18 +45,18 @@ export class root extends React.Component {
                             content: "home",
                         });
                         break;
-                    case "propagate_gameStart":
+                    case "startGame":
                         this.state.setStateRoot({
                             content: "game",
                             board: message.payload,
                         });
                         break;
-                    case "propagate_gameEnd":
+                    case "endGame":
                         this.state.setStateRoot({
                             content: "home",
                         });
                         break;
-                    case "propagate_move":
+                    case "move":
                         let chessMove = JSON.parse(message.payload)
                         let fromIndex = chessMove.fromRow * 8 + chessMove.fromCol;
                         let boardCharArray = this.state.board.split("");
