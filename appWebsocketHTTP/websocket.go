@@ -121,6 +121,7 @@ func (app *AppWebsocketHTTP) OnDisconnectHandler(node *Node.Node, websocketClien
 		if errorLogger := node.GetErrorLogger(); errorLogger != nil {
 			errorLogger.Log(Error.New("Error receiving endGame response", err).Error())
 		}
+		return
 	}
 	if response.GetTopic() == Message.TOPIC_SUCCESS {
 		gameId := response.GetPayload()
