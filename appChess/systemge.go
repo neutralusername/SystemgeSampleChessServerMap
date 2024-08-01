@@ -11,10 +11,6 @@ import (
 	"github.com/neutralusername/Systemge/Node"
 )
 
-func (app *App) GetAsyncMessageHandlers() map[string]Node.AsyncMessageHandler {
-	return map[string]Node.AsyncMessageHandler{}
-}
-
 func (app *App) GetSyncMessageHandlers() map[string]Node.SyncMessageHandler {
 	return map[string]Node.SyncMessageHandler{
 		topics.MOVE: func(node *Node.Node, message *Message.Message) (string, error) {
@@ -78,4 +74,8 @@ func (game *ChessGame) handleMoveRequest(move *dto.Move) (*dto.Move, error) {
 		return nil, Error.New("Invalid move", err)
 	}
 	return chessMove, nil
+}
+
+func (app *App) GetAsyncMessageHandlers() map[string]Node.AsyncMessageHandler {
+	return map[string]Node.AsyncMessageHandler{}
 }
