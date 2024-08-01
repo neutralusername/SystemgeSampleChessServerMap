@@ -66,8 +66,6 @@ func (app *App) GetSyncMessageHandlers() map[string]Node.SyncMessageHandler {
 }
 
 func (game *ChessGame) handleMoveRequest(move *dto.Move) (*dto.Move, error) {
-	game.mutex.Lock()
-	defer game.mutex.Unlock()
 	if game.isWhiteTurn() && move.PlayerId != game.whiteId {
 		return nil, Error.New("Not your turn", nil)
 	}

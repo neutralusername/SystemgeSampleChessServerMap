@@ -22,7 +22,6 @@ func (chessGame *ChessGame) initBoard() {
 
 type ChessGame struct {
 	board   [8][8]Piece
-	mutex   sync.Mutex
 	blackId string
 	whiteId string
 	moves   []*dto.Move
