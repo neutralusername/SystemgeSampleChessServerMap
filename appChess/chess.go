@@ -1,10 +1,31 @@
 package appChess
 
 import (
+	"SystemgeSampleChessServer/dto"
 	"strings"
 
 	"github.com/neutralusername/Systemge/Tools"
 )
+
+type ChessGame struct {
+	board   [8][8]Piece
+	blackId string
+	whiteId string
+	moves   []*dto.Move
+}
+
+func newChessGame(whiteId string, blackId string) *ChessGame {
+	game := &ChessGame{
+		whiteId: whiteId,
+		blackId: blackId,
+	}
+	game.initBoard()
+	return game
+}
+
+func (chessGame *ChessGame) initBoard() {
+	chessGame.board = getStandardStartingPosition()
+}
 
 func (game *ChessGame) marshalBoard() string {
 	var builder strings.Builder

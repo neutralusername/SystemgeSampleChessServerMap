@@ -44,8 +44,7 @@ func main() {
 				ErrorLoggerPath:   LOGGER_PATH,
 			},
 			SystemgeConfig: &Config.Systemge{
-				HandleMessagesSequentially: false,
-
+				HandleMessagesSequentially:      false,
 				SyncRequestTimeoutMs:            10000,
 				TcpTimeoutMs:                    5000,
 				MaxConnectionAttempts:           0,
