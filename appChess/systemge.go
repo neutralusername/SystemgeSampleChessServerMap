@@ -38,13 +38,13 @@ func (app *App) GetSyncMessageHandlers() map[string]Node.SyncMessageHandler {
 			blackId := ids[1]
 			game := newChessGame(whiteId, blackId)
 			app.mutex.Lock()
+			defer app.mutex.Unlock()
 			if app.games[whiteId] != nil || app.games[blackId] != nil {
 				app.mutex.Unlock()
 				return "", Error.New("Already in a game", nil)
 			}
 			app.games[whiteId] = game
 			app.games[blackId] = game
-			app.mutex.Unlock()
 			return game.marshalBoard(), nil
 		},
 		topics.ENDGAME: func(node *Node.Node, message *Message.Message) (string, error) {
