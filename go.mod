@@ -6,7 +6,7 @@ go 1.22.3
 
 require (
 	github.com/gorilla/websocket v1.5.3
-	github.com/neutralusername/Systemge v0.0.0-20240804171652-d09f2621a674
+	github.com/neutralusername/Systemge v0.0.0-20240804183926-4bab4b6c9051
 )
 
 require golang.org/x/oauth2 v0.21.0 // indirect
