@@ -66,7 +66,6 @@ func main() {
 				MaxPayloadSize:           0,
 				MaxTopicSize:             0,
 				MaxSyncTokenSize:         0,
-				SyncResponseLimit:        1,
 			},
 		}, appChess.New()),
 
@@ -102,7 +101,6 @@ func main() {
 				MaxPayloadSize:           0,
 				MaxTopicSize:             0,
 				MaxSyncTokenSize:         0,
-				SyncResponseLimit:        1,
 			},
 			WebsocketConfig: &Config.Websocket{
 				Pattern: "/ws",
