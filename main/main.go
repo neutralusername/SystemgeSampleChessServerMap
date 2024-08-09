@@ -110,7 +110,6 @@ func main() {
 					Whitelist: []string{},
 				},
 				HandleClientMessagesSequentially: false,
-				ClientMessageCooldownMs:          0,
 				ClientWatchdogTimeoutMs:          20000,
 				Upgrader: &websocket.Upgrader{
 					ReadBufferSize:  1024,
