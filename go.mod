@@ -8,7 +8,7 @@ toolchain go1.23.0
 
 require (
 	github.com/gorilla/websocket v1.5.3
-	github.com/neutralusername/Systemge v0.0.0-20240829070817-5453f2bed3db
+	github.com/neutralusername/Systemge v0.0.0-20240905051104-5e880f68fa5f
 )
 
 require golang.org/x/oauth2 v0.21.0 // indirect
