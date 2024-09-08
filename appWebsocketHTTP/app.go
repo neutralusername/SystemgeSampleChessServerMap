@@ -60,7 +60,7 @@ func New() *AppWebsocketHTTP {
 				if response.GetTopic() != Message.TOPIC_SUCCESS {
 					panic(Error.New("Error starting game", errors.New(response.GetPayload())))
 				}
-				err = app.websocketServer.AddClientToGroup(whiteId+"-"+blackId, whiteId, blackId)
+				err = app.websocketServer.AddClientsToGroup(whiteId+"-"+blackId, whiteId, blackId)
 				if err != nil {
 					panic(Error.New("Error adding clients to group", err))
 				}
@@ -87,7 +87,7 @@ func New() *AppWebsocketHTTP {
 				}
 				ids := strings.Split(response.GetPayload(), "-")
 				app.websocketServer.Groupcast(response.GetPayload(), Message.NewAsync(topics.ENDGAME, ""))
-				app.websocketServer.RemoveClientFromGroup(response.GetPayload(), ids...)
+				app.websocketServer.RemoveClientsFromGroup(response.GetPayload(), ids...)
 				return nil
 			},
 			topics.MOVE: func(websocketClient *WebsocketServer.WebsocketClient, message *Message.Message) error {
@@ -210,6 +210,6 @@ func (app *AppWebsocketHTTP) OnDisconnectHandler(websocketClient *WebsocketServe
 		gameId := response.GetPayload()
 		ids := strings.Split(gameId, "-")
 		app.websocketServer.Groupcast(gameId, Message.NewAsync("propagate_gameEnd", ""))
-		app.websocketServer.RemoveClientFromGroup(gameId, ids...)
+		app.websocketServer.RemoveClientsFromGroup(gameId, ids...)
 	}
 }
