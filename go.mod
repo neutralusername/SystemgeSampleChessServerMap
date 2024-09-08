@@ -6,7 +6,7 @@ toolchain go1.23.0
 
 //replace github.com/neutralusername/Systemge => ../Systemge
 
-require github.com/neutralusername/Systemge v0.0.0-20240908122750-9f1f787e8d01
+require github.com/neutralusername/Systemge v0.0.0-20240908124625-5b6f7a31e6b2
 
 require (
 	github.com/gorilla/websocket v1.5.3 // indirect
