@@ -47,7 +47,9 @@ func New() *App {
 				},
 			},
 		},
-		nil, SystemgeConnection.NewConcurrentMessageHandler(
+		nil, nil,
+		nil,
+		SystemgeConnection.NewConcurrentMessageHandler(
 			SystemgeConnection.AsyncMessageHandlers{},
 			SystemgeConnection.SyncMessageHandlers{
 				topics.MOVE: func(systemgeConnection SystemgeConnection.SystemgeConnection, message *Message.Message) (string, error) {
