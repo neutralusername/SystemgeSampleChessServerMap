@@ -6,13 +6,13 @@ import (
 	"time"
 
 	"github.com/neutralusername/Systemge/Config"
-	"github.com/neutralusername/Systemge/Dashboard"
+	"github.com/neutralusername/Systemge/DashboardServer"
 )
 
 const LOGGER_PATH = "logs.log"
 
 func main() {
-	Dashboard.NewServer("dashboardServer",
+	DashboardServer.New("dashboardServer",
 		&Config.DashboardServer{
 			HTTPServerConfig: &Config.HTTPServer{
 				TcpServerConfig: &Config.TcpServer{
@@ -27,14 +27,14 @@ func main() {
 				},
 			},
 			SystemgeServerConfig: &Config.SystemgeServer{
-				ListenerConfig: &Config.TcpSystemgeListener{
+				TcpSystemgeListenerConfig: &Config.TcpSystemgeListener{
 					TcpServerConfig: &Config.TcpServer{
 						TlsCertPath: "MyCertificate.crt",
 						TlsKeyPath:  "MyKey.key",
 						Port:        60000,
 					},
 				},
-				ConnectionConfig: &Config.TcpSystemgeConnection{},
+				TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{},
 			},
 			HeapUpdateIntervalMs:      1000,
 			GoroutineUpdateIntervalMs: 1000,

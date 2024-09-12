@@ -8,7 +8,7 @@ import (
 	"sync"
 
 	"github.com/neutralusername/Systemge/Config"
-	"github.com/neutralusername/Systemge/Dashboard"
+	"github.com/neutralusername/Systemge/DashboardClientCustomService"
 	"github.com/neutralusername/Systemge/Error"
 	"github.com/neutralusername/Systemge/HTTPServer"
 	"github.com/neutralusername/Systemge/Helpers"
@@ -48,7 +48,7 @@ func New() *AppWebsocketHTTP {
 					return Error.New("Opponent does not exist", nil)
 				}
 				response, err := SingleRequestServer.SyncRequest("websocketHttpServer", &Config.SingleRequestClient{
-					TcpConnectionConfig: &Config.TcpSystemgeConnection{},
+					TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{},
 					TcpClientConfig: &Config.TcpClient{
 						Address: "localhost:60001",
 						TlsCert: Helpers.GetFileContent("MyCertificate.crt"),
@@ -73,7 +73,7 @@ func New() *AppWebsocketHTTP {
 			},
 			topics.ENDGAME: func(websocketClient *WebsocketServer.WebsocketClient, message *Message.Message) error {
 				response, err := SingleRequestServer.SyncRequest("websocketHttpServer", &Config.SingleRequestClient{
-					TcpConnectionConfig: &Config.TcpSystemgeConnection{},
+					TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{},
 					TcpClientConfig: &Config.TcpClient{
 						Address: "localhost:60001",
 						TlsCert: Helpers.GetFileContent("MyCertificate.crt"),
@@ -98,7 +98,7 @@ func New() *AppWebsocketHTTP {
 				}
 				move.PlayerId = websocketClient.GetId()
 				response, err := SingleRequestServer.SyncRequest("websocketHttpServer", &Config.SingleRequestClient{
-					TcpConnectionConfig: &Config.TcpSystemgeConnection{},
+					TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{},
 					TcpClientConfig: &Config.TcpClient{
 						Address: "localhost:60001",
 						TlsCert: Helpers.GetFileContent("MyCertificate.crt"),
@@ -132,16 +132,16 @@ func New() *AppWebsocketHTTP {
 			"/": HTTPServer.SendDirectory("../frontend"),
 		},
 	)
-	Dashboard.NewClient("appWebsocketHttp_dashboardClient",
+	DashboardClientCustomService.New_("appWebsocketHttp_dashboardClient",
 		&Config.DashboardClient{
-			ConnectionConfig: &Config.TcpSystemgeConnection{},
-			ClientConfig: &Config.TcpClient{
+			TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{},
+			TcpClientConfig: &Config.TcpClient{
 				Address: "localhost:60001",
 				TlsCert: Helpers.GetFileContent("MyCertificate.crt"),
 				Domain:  "example.com",
 			},
 		},
-		app.start, app.stop, nil, app.getStatus,
+		app.start, app.stop, app.getStatus, app.websocketServer.GetMetrics,
 		nil,
 	).Start()
 	if err := app.start(); err != nil {
@@ -198,7 +198,7 @@ func (app *AppWebsocketHTTP) OnConnectHandler(websocketClient *WebsocketServer.W
 
 func (app *AppWebsocketHTTP) OnDisconnectHandler(websocketClient *WebsocketServer.WebsocketClient) {
 	response, err := SingleRequestServer.SyncRequest("websocketHttpServer", &Config.SingleRequestClient{
-		TcpConnectionConfig: &Config.TcpSystemgeConnection{},
+		TcpSystemgeConnectionConfig: &Config.TcpSystemgeConnection{},
 		TcpClientConfig: &Config.TcpClient{
 			Address: "localhost:60001",
 			TlsCert: Helpers.GetFileContent("MyCertificate.crt"),
